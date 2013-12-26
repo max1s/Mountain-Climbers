@@ -1,0 +1,112 @@
+fileFormatVersion: 2
+guid: f390c291e5dc05543a0812b0f21bec56
+ModelImporter:
+  serializedVersion: 15
+  fileIDToRecycleName:
+    100000: Armature
+    100002: Body
+    100004: Camera
+    100006: Cube
+    100008: Grapple
+    100010: LegL_L
+    100012: LegL_L_001
+    100014: LegL_L_002
+    100016: LegL_L_003
+    100018: LegL_R
+    100020: LegL_R_001
+    100022: LegL_R_002
+    100024: LegL_R_003
+    100026: LegU_L
+    100028: LegU_L_001
+    100030: LegU_L_002
+    100032: LegU_L_003
+    100034: LegU_R
+    100036: LegU_R_001
+    100038: LegU_R_002
+    100040: LegU_R_003
+    100042: //RootNode
+    100044: turret_gun
+    100046: turret_rot
+    400000: Armature
+    400002: Body
+    400004: Camera
+    400006: Cube
+    400008: Grapple
+    400010: LegL_L
+    400012: LegL_L_001
+    400014: LegL_L_002
+    400016: LegL_L_003
+    400018: LegL_R
+    400020: LegL_R_001
+    400022: LegL_R_002
+    400024: LegL_R_003
+    400026: LegU_L
+    400028: LegU_L_001
+    400030: LegU_L_002
+    400032: LegU_L_003
+    400034: LegU_R
+    400036: LegU_R_001
+    400038: LegU_R_002
+    400040: LegU_R_003
+    400042: //RootNode
+    400044: turret_gun
+    400046: turret_rot
+    4300000: Cube
+    7400000: Default Take
+    7400002: ArmatureAction_001
+    7400004: PoseLib
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: Cube
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: Cube
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  userData: 

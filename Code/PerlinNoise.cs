@@ -24,7 +24,7 @@ public class PerlinNoise
     {
         float[,] smoothNoise = new float[width, height];
 
-        int smoothPeriod = 8 << octave;
+        int smoothPeriod =  8 << octave;
         float smoothFrequency = 1.0f / smoothPeriod;
 
         for (int i = 0; i < width; i++)

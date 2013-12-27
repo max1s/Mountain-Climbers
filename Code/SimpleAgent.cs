@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class SimpleAgent : MonoBehaviour 
 {
-    public List<NaturalMesh.Point> myGraph;
+    List<NaturalMesh.Point> myGraph;
 	// Use this for initialization
 	void Start () 
     {

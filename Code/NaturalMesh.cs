@@ -193,7 +193,18 @@ public class NaturalMesh : MonoBehaviour
 
 	public bool CanConnectTo(Point @this, Point @that)
 	{
+		//Vector3 relativeThis = WorldToTerrainPosition(terrain, 512, @this.Position);
+		//Vector3 relativeThat = WorldToTerrainPosition(Terrain, 512, @that.Position);
 
+	//	for( float i = 0f; i <= 1; i += 0.1f )
+	//	{
+	//		Vector3 position = Vector3.Lerp(@this.Position, @that.Position, i);
+	//		Vector3 relativePosition = WorldToTerrainPosition(Terrain.activeTerrain, 512, position);
+	//		if(steepness[(int)relativePosition.x, (int)relativePosition.z] > 0.2)
+	//			return false;
+	//	}
+
+		return true;
 	}
 	
 	void GenerateEdges()
@@ -280,25 +291,35 @@ public class NaturalMesh : MonoBehaviour
 		{
             int lineCount = 0;
 
-            GameObject go = new GameObject();
+            GameObject go = new GameObject("line");
             LineRenderer lines = go.AddComponent<LineRenderer>();
             lines.renderer.material.color = colors[origin.groupID % colors.Length];
             lines.SetVertexCount(origin.myNeighbours.Count * 2 + 1);
             lines.SetWidth(0.3f, 0.3f);
+			go.transform.parent = this.transform;
 
 			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			//cube.renderer.material = graphMat;
             cube.renderer.material.color = colors[origin.groupID % colors.Length];
 			cube.transform.localScale = new Vector3(pointSize, pointSize, pointSize);
-			cube.transform.position = origin.Position + new Vector3(0, 0.5f, 0);
+			cube.transform.position = origin.Position + new Vector3(0, 5.5f, 0);
+			cube.transform.parent = this.transform;
 			//inefficient!
-            lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 0.5f, 0));
+            lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 5.5f, 0));
 			foreach(Point point in origin.myNeighbours)
 			{
-                lines.SetPosition(lineCount++, point.Position + new Vector3(0, 0.5f, 0));
-				lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 0.5f, 0));
+                lines.SetPosition(lineCount++, point.Position + new Vector3(0, 5.5f, 0));
+				lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 5.5f, 0));
 			}
 		}	
+	}
+
+	void ClearGraph()
+	{
+		foreach(Transform child in transform)
+		{
+			Destroy(child);
+		}
 	}
 	
 	void Update()

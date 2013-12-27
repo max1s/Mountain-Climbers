@@ -388,7 +388,10 @@ public class RTSCamera : MonoBehaviour
 
 	void Start() 
 	{
-	
+		transform.position = new Vector3(10f, 150f, 10f);
+		transform.rotation = Quaternion.Euler( new Vector3(30f, 30f, 0f) );
+		camera.fieldOfView = 60f;
+		camera.farClipPlane = 1000f;
 	}
 	
 	

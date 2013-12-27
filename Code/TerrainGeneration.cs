@@ -1,22 +1,84 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TerrainGeneration : MonoBehaviour
-{
-	TerrainData myTerrain;
-	GameObject waterPlane;
-	
+public class TerrainGeneration
+{	
 	//terrainSizes
-	int terrainX = 512;
-	int terrainZ = 512;
-	int terrainY = 200;
+	static int terrainX = 512;
+	static int terrainZ = 512;
+	static int terrainY = 200;
 	
-	public float[,] heights;
+	public static float[,] heights;
+
+	public static TerrainData GenerateTerrain() 
+	{
+		TerrainData myTerrain = new TerrainData();
+		myTerrain.size = new Vector3(terrainX, terrainY, terrainZ);
+		myTerrain.heightmapResolution = 512;
+
+		heights = new float[terrainX, terrainZ];
+		heights = HeightMap.GenerateMixedTerrain(4, 512, 512, 8);
+
+		for(int i = 0; i < terrainX; i++)
+		{
+			for(int j = 0; j < terrainZ; j++)
+			{
+				if((j == 0 || i == 0 || j == terrainZ -1 || i == terrainX -1))
+				{
+					heights[i,j] = 0;
+				}
+				
+			}
+		}
+		myTerrain.size = new Vector3(terrainX, terrainY, terrainZ);
+		myTerrain.SetHeights(0,0, heights);
+		myTerrain.splatPrototypes = BindTexturesToBrush();
+		myTerrain.SetAlphamaps(0,0, CalculateAlphas());
+		myTerrain.RefreshPrototypes();
+
+		return myTerrain;
+
+	}
+
+	public static TerrainData GenerateTerrain(string uniform) 
+	{
+		TerrainData myTerrain = new TerrainData();
+		myTerrain.size = new Vector3(terrainX, terrainY, terrainZ);
+		myTerrain.heightmapResolution = 512;
 		
+		heights = new float[terrainX, terrainZ];
+		heights = HeightMap.GenerateUniformTerrain(uniform, 513, 513, 8);
+		//heights = HeightMap.GenerateMixedTerrain(4, 512, 512, 8);
 		
-	//}
+		for(int i = 0; i < terrainX; i++)
+		{
+			for(int j = 0; j < terrainZ; j++)
+			{
+				if((j == 0 || i == 0 || j == terrainZ -1 || i == terrainX -1))
+				{
+					heights[i,j] = 0;
+				}
+				
+			}
+		}
+		myTerrain.size = new Vector3(terrainX, terrainY, terrainZ);
+		myTerrain.SetHeights(0,0, heights);
+		myTerrain.splatPrototypes = BindTexturesToBrush();
+		myTerrain.SetAlphamaps(0,0, CalculateAlphas());
+		myTerrain.RefreshPrototypes();
+		
+		return myTerrain;
+		
+	}
 	
-	void BindTexturesToBrush()
+	
+	public static float[,] ReturnHeights()
+	{
+		return heights;
+	}
+
+		
+	static SplatPrototype[] BindTexturesToBrush()
 	{
 		SplatPrototype[] textures = new SplatPrototype[5];
 		textures[0] = new SplatPrototype();
@@ -43,16 +105,16 @@ public class TerrainGeneration : MonoBehaviour
 		textures[4].texture = (Texture2D)Resources.Load ("Sand", typeof(Texture2D));
 		textures[4].tileOffset = new Vector2(0, 0);
 		textures[4].tileSize = new Vector2(15,15);
-		
-		myTerrain.splatPrototypes = textures;
-		
+
+		return textures;
+
 	}
 	
-	void CalculateAlphas()
+	static float[,,] CalculateAlphas()
 	{
 		
 		float[,,] alphaMaps = new float[terrainX, terrainZ, 5];
-		alphaMaps = myTerrain.GetAlphamaps(0, 0, terrainX, terrainZ);
+		//alphaMaps = myTerrain.GetAlphamaps(0, 0, terrainX, terrainZ);
 
 		for(int i = 0; i < terrainX; i++)
 		{
@@ -110,53 +172,10 @@ public class TerrainGeneration : MonoBehaviour
 			}
 		
 		}
-		myTerrain.SetAlphamaps(0,0, alphaMaps);
+
+		return alphaMaps;
 		
 	}
 
-	// Use this for initialization
-	void Start () 
-	{
-        //Random.seed = 4;
-		heights = new float[terrainX, terrainZ];
-		myTerrain = Terrain.activeTerrain.terrainData;
-		myTerrain.size = new Vector3(terrainX, terrainY, terrainZ);
-		//heights = HeightMap.GenerateUniformTerrain("mountain", 513, 513, 8);
-		heights = HeightMap.GenerateMixedTerrain(4, 513, 513, 8);
-		for(int i = 0; i < terrainX; i++)
-		{
-			for(int j = 0; j < terrainZ; j++)
-			{
-				if((j == 0 || i == 0 || j == terrainZ -1 || i == terrainX -1))
-				{
-					heights[i,j] = 0;
-				}
-				
-			}
-		}
-		
-		//myTerrain.SetHeights(0,0, HeightMapGeneration.GenerateUniformTerrain("desert",513,513,8));
-		myTerrain.SetHeights(0,0, heights);
-		//myTerrain.SetAlphamaps(0,0, ColourTerrain());
-		
-		
-		
-		BindTexturesToBrush();
-		CalculateAlphas();
-	}
-		
-		
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	
-	} 
-	
-	public float[,] ReturnHeights()
-	{
-		return heights;
-	}
-		
 		
 }

@@ -10,7 +10,8 @@ public class HeightMap
 	public static Dictionary<string,float[]> terrainTypes = new Dictionary<string, float[]>()
 	{
 		{"mountain", new float[]{1f,0.02f,0.02f,0.02f,0.8f,0.3f,0.2f, 0.1f}},
-		{"desert", new float[]{0.3f,0.3f,0.2f,0.2f,0.01f,0.01f,0.01f,0.01f}}
+		{"desert", new float[]{0.3f,0.3f,0.2f,0.2f,0.01f,0.01f,0.01f,0.01f}},
+		//{"art",new float[]{1f, 0.6f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.1f}}
 		
 	};
 	

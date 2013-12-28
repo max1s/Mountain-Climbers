@@ -8,6 +8,8 @@ public class NaturalMesh : MonoBehaviour
 	readonly Color[] colors = new Color[]{Color.black, Color.blue, Color.yellow, Color.green, Color.red};
 	private Shader graphShader;
 	private Material graphMat;
+
+	bool toggle = true;
 	
 	public static List<Point> myGraph;
 	private float pointSize = 2f;
@@ -193,16 +195,8 @@ public class NaturalMesh : MonoBehaviour
 
 	public bool CanConnectTo(Point @this, Point @that)
 	{
-		//Vector3 relativeThis = WorldToTerrainPosition(terrain, 512, @this.Position);
-		//Vector3 relativeThat = WorldToTerrainPosition(Terrain, 512, @that.Position);
-
-	//	for( float i = 0f; i <= 1; i += 0.1f )
-	//	{
-	//		Vector3 position = Vector3.Lerp(@this.Position, @that.Position, i);
-	//		Vector3 relativePosition = WorldToTerrainPosition(Terrain.activeTerrain, 512, position);
-	//		if(steepness[(int)relativePosition.x, (int)relativePosition.z] > 0.2)
-	//			return false;
-	//	}
+		if(Vector3.Distance (@this.Position, @that.Position) < 20)
+			return false;
 
 		return true;
 	}
@@ -302,14 +296,14 @@ public class NaturalMesh : MonoBehaviour
 			//cube.renderer.material = graphMat;
             cube.renderer.material.color = colors[origin.groupID % colors.Length];
 			cube.transform.localScale = new Vector3(pointSize, pointSize, pointSize);
-			cube.transform.position = origin.Position + new Vector3(0, 5.5f, 0);
+			cube.transform.position = origin.Position + new Vector3(0, 1.0f, 0);
 			cube.transform.parent = this.transform;
 			//inefficient!
-            lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 5.5f, 0));
+            lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 1.0f, 0));
 			foreach(Point point in origin.myNeighbours)
 			{
-                lines.SetPosition(lineCount++, point.Position + new Vector3(0, 5.5f, 0));
-				lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 5.5f, 0));
+                lines.SetPosition(lineCount++, point.Position + new Vector3(0, 1.0f, 0));
+				lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 1.0f, 0));
 			}
 		}	
 	}
@@ -318,12 +312,25 @@ public class NaturalMesh : MonoBehaviour
 	{
 		foreach(Transform child in transform)
 		{
-			Destroy(child);
+			Destroy(child.gameObject);
 		}
 	}
 	
 	void Update()
 	{
+		if(Input.GetKeyDown(KeyCode.M))
+		{
+			if(toggle)
+			{
+				ClearGraph();
+				toggle = !toggle;
+			}
+			else
+			{
+				DrawGraph(myGraph, numberOfNeighbours);
+				toggle = !toggle;
+			}
+		} 
 	}
 		
 

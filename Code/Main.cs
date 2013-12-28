@@ -76,6 +76,25 @@ public class Main : MonoBehaviour {
 		}
 	}
 
+	void SpawnCritter()
+	{
+		GameObject go = (GameObject)Instantiate(Resources.Load("spiderbot"));
+		go.transform.position = new Vector3 (100, 200, 100);
+		go.transform.localScale = new Vector3(100, 100, 100);
+		go.AddComponent<CharacterController>();
+		go.AddComponent<ZombieScript>();
+	}
+
+	void SpawnSkeleton()
+	{
+		GameObject go = (GameObject)Instantiate(Resources.Load("skeleton"));
+		go.transform.position = new Vector3 (150, 200, 150);
+		go.transform.localScale = new Vector3(50, 50, 150);
+		go.AddComponent<CharacterController>();
+		go.AddComponent<ZombieScript>();
+
+	}
+
 	void ResetCamera()
 	{
 		Destroy (camera);

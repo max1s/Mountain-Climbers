@@ -17,17 +17,24 @@ public class ControlGUI : MonoBehaviour
 
 		if(GUI.Button(new Rect(20,70,100,20), "Spawn Critter")) 
 		{
-
+			SendMessageUpwards ("SpawnCritter");
 		}
 
 		if(GUI.Button(new Rect(20,100,100,20), "Reset Camera")) 
 		{
 			SendMessageUpwards("ResetCamera");
 		}
+
 		if(GUI.Button(new Rect(20,130,100,20), "Clear")) 
 		{
 			SendMessageUpwards("DestroyWorld");
 		}
+
+		if(GUI.Button(new Rect(20,160,100,20), "Spawn Skeleton")) 
+		{
+			SendMessageUpwards ("Spawn Skeleton");
+		}
+
 
 	}
 }

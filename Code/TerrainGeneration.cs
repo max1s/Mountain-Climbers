@@ -48,8 +48,7 @@ public class TerrainGeneration
 		
 		heights = new float[terrainX, terrainZ];
 		heights = HeightMap.GenerateUniformTerrain(uniform, 513, 513, 8);
-		//heights = HeightMap.GenerateMixedTerrain(4, 512, 512, 8);
-		
+
 		for(int i = 0; i < terrainX; i++)
 		{
 			for(int j = 0; j < terrainZ; j++)
@@ -78,7 +77,7 @@ public class TerrainGeneration
 	}
 
 		
-	static SplatPrototype[] BindTexturesToBrush()
+	private static SplatPrototype[] BindTexturesToBrush()
 	{
 		SplatPrototype[] textures = new SplatPrototype[5];
 		textures[0] = new SplatPrototype();
@@ -110,7 +109,7 @@ public class TerrainGeneration
 
 	}
 	
-	static float[,,] CalculateAlphas()
+	private static float[,,] CalculateAlphas()
 	{
 		
 		float[,,] alphaMaps = new float[terrainX, terrainZ, 5];

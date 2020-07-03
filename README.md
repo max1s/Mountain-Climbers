@@ -1,5 +1,3 @@
-MountainClimbers
+Mountain Climbers
 
-=====
-
-3rd year Project Code at Durham University
+A game about climbing mountains

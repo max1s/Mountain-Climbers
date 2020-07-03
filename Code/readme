@@ -1,0 +1,46 @@
+////////////README FOR MAX WHITBY PROJECT////////////////
+
+All code best read with Sublime Text: http://www.sublimetext.com/
+
+To run this project: 
+1. Download the latest version of unity: https://unity3d.com/
+2. Create an Empty Game Object and attach the script Main to it. Make sure that all the code is in the folder with the main script.
+3. Compile and port to your device of choice!
+
+Project Breakdown:
+1. The Main file controls most of the automated testing, i.e loading of terrain, execution of paths etc. The class ControlGUI.cs is responsible for the GUI.
+
+2. The folder entitled ///pathfinding/// contains all the classes on.. pathfinding
+
+	|Agent.cs - Contains information on the graph.
+	| <- Pathfinder.cs - Base class for path info
+	| <- AgentMover.cs - Puts a walker on the terrain to walk a path created
+	| 	<- Astar.cs - Vanilla
+	| 	<- IDAstar.cs - Variant
+	| 	<- AgreedPoint.cs - Variant
+	| 	<- Beam.cs - Variant
+	|   <- DWAstar.cs - Variant
+	|   <- BDAstar.cs - Variant
+	|   <- Theta.cs - Variant
+
+3. The folder entitled ///graph/// just contains two classes:
+
+   |NaturalMesh.cs - This is a large class responsible for the generation of the planning graph: The Methods GenerateEvenPoints generates a square mesh, and GeneratePoints generates the better representation.
+
+   |Point.cs - Responsible for Storing information on Nodes
+
+
+
+4. The folder entitled ///Terrain Generation/// Contains all of the classes used for terrain generation and graphics
+
+  |PerlinNoise.cs - Used to generate Perlin Noise
+  |ObstacleGenerator.cs - Makes fun obstacles
+  |TerrainGenerator.cs - Makes the pretty graphics on the terrain
+  |GraphDrawer.cs - Draws the graphs upon the terrain.
+
+5. The folder ///Database and Other/// contains all the classes that were used for database control,screenshots and other.
+  |DBAccess.cs - Executes SQL commands and establishes a connection to the database.
+  | <- DBManager.cs - Executes the specific SQL commands used within this project
+  |RTSCamera.cs - Code for the main camera
+  |ScreenShotWriter.cs - For file management of screenshots
+  | Helper.cs - Contains useful helper functions that were used all over the program.

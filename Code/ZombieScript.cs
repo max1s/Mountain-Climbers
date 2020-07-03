@@ -18,21 +18,24 @@ public class ZombieScript : MonoBehaviour {
 		vertical = transform.TransformDirection(Vector3.forward);
 		horizontal = transform.TransformDirection(Vector3.right);
 		controller  = GetComponent<CharacterController>();
+		controller.radius = 10;
+		controller.height = 0.01f;
+		controller.center = new Vector3(0f, 5f, 0f);
 	}
 
 	public void Update()
 	{
-		animation.Play ("stopping");
+		if(!Grounded ())
+		controller.Move(new Vector3(0, -1, 0));
+		if(Input.GetKey(KeyCode.UpArrow))
+			controller.Move (horizontal * 0.5f);
+		animation.Play("walk");
 	}
 
-
-	public void movement() {
-
-		if(Input.GetKey(KeyCode.UpArrow)){
-			Debug.Log ( (vertical * 3f * Time.deltaTime) );
-			controller.Move ((vertical * 3f * Time.deltaTime));
-		}
-		
+	public bool Grounded()
+	{
+		return (controller.collisionFlags == CollisionFlags.Below);
 	}
 	
+
 }

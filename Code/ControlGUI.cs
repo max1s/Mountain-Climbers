@@ -10,12 +10,12 @@ public class ControlGUI : MonoBehaviour
 		// Make a background box
 		GUI.Box(new Rect(10,10,120,400), "Control Menu");
 
-		if(GUI.Button(new Rect(20,40,100,20), "Create New World")) 
+		if(GUI.Button(new Rect(20,40,100,20), "Start Testing")) 
 		{
 			SendMessageUpwards("CreateNewWorld");
 		}
 
-		if(GUI.Button(new Rect(20,70,100,20), "Spawn Critter")) 
+		if(GUI.Button(new Rect(20,70,100,20), "Stop Testing")) 
 		{
 			SendMessageUpwards ("SpawnCritter");
 		}
@@ -25,12 +25,12 @@ public class ControlGUI : MonoBehaviour
 			SendMessageUpwards("ResetCamera");
 		}
 
-		if(GUI.Button(new Rect(20,130,100,20), "Clear")) 
+		if(GUI.Button(new Rect(20,130,100,20), "PathFind")) 
 		{
-			SendMessageUpwards("DestroyWorld");
+			SendMessageUpwards("PathFind");
 		}
 
-		if(GUI.Button(new Rect(20,160,100,20), "Spawn Skeleton")) 
+		if(GUI.Button(new Rect(20,160,100,20), "Show Search Grid")) 
 		{
 			SendMessageUpwards ("Spawn Skeleton");
 		}

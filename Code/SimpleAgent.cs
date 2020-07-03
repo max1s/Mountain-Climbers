@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class SimpleAgent : MonoBehaviour 
 {
-    List<NaturalMesh.Point> myGraph;
+  //  List<NaturalMesh.Point> myGraph;
 	// Use this for initialization
 	void Start () 
     {
-        myGraph = NaturalMesh.myGraph;
+//        myGraph = NaturalMesh.myGraph;
 	}
 	
 	// Update is called once per frame

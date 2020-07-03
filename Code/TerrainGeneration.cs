@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TerrainGeneration
 {	
@@ -7,6 +8,8 @@ public class TerrainGeneration
 	static int terrainX = 512;
 	static int terrainZ = 512;
 	static int terrainY = 200;
+
+	private static List<Vector4> forestPositions;
 	
 	public static float[,] heights;
 
@@ -34,8 +37,11 @@ public class TerrainGeneration
 		myTerrain.SetHeights(0,0, heights);
 		myTerrain.splatPrototypes = BindTexturesToBrush();
 		myTerrain.SetAlphamaps(0,0, CalculateAlphas());
-		myTerrain.RefreshPrototypes();
-
+		//myTerrain.RefreshPrototypes();
+		//myTerrain.treePrototypes = BindTreeToBrush();
+		//myTerrain.RefreshPrototypes();
+		//myTerrain.treeInstances = TreeMaking (myTerrain);
+		//myTerrain.RefreshPrototypes();
 		return myTerrain;
 
 	}
@@ -64,8 +70,9 @@ public class TerrainGeneration
 		myTerrain.SetHeights(0,0, heights);
 		myTerrain.splatPrototypes = BindTexturesToBrush();
 		myTerrain.SetAlphamaps(0,0, CalculateAlphas());
-		myTerrain.RefreshPrototypes();
-		
+		myTerrain.treePrototypes = BindTreeToBrush();
+		myTerrain.RefreshPrototypes();	
+		myTerrain.treeInstances = TreeMaking (myTerrain);
 		return myTerrain;
 		
 	}
@@ -108,7 +115,109 @@ public class TerrainGeneration
 		return textures;
 
 	}
-	
+	public static TreePrototype[] BindTreeToBrush()
+	{
+		TreePrototype[] trees = new TreePrototype[1];
+		trees[0] = new TreePrototype();
+		trees[0].prefab = Resources.Load("Trees Ambient-Occlusion/ScotsPineTypeA") as GameObject;
+		return trees;
+
+	}
+	public static TreeInstance[] TreeMaking(TerrainData myTerrain)
+	{
+		List<Vector3> treeLocations = TreePositioning(400, 3);
+		List<TreeInstance> trees = new List<TreeInstance>();
+		for(int i = 0; i < treeLocations.Count; i++ )
+		{
+			TreeInstance tree = new TreeInstance();
+			tree.color = Color.red;
+			tree.prototypeIndex = 1;
+			Vector3 actualPosition =  treeLocations[i];//Helper.TerrainToWorldPosition(myTerrain, 512, treeLocations[i]);
+			actualPosition.y = 200;//heights[(int)actualPosition.x, (int)actualPosition.z];
+			tree.position = actualPosition;
+			tree.widthScale = 5;
+			tree.heightScale = 5;
+
+
+			trees.Add(tree);
+			if(i < 10)
+				Debug.Log (treeLocations[i]);
+		}
+		return trees.ToArray();
+
+	}
+
+	public static List<Vector3> TreePositioning(int noOfTrees, int noOfForests)
+	{
+		forestPositions = new List<Vector4>();
+		List<Vector3> trees = new List<Vector3>();
+		for(int i = 0; i < noOfForests; i++)
+		{
+			Vector3 rootTree = new Vector3(Random.Range (0, 512), 0, Random.Range (0, 512));
+			int x0 = (rootTree.x - (int)(noOfTrees *0.1 ) > 1) ? (int)rootTree.x - (int)(noOfTrees *0.1  ) : 1;
+			int y0 = (rootTree.z - (int)(noOfTrees *0.1  ) > 1) ? (int)rootTree.z - (int)(noOfTrees *0.1  ) : 1;
+			int x1 = (rootTree.x + (int)(noOfTrees *0.1  ) < 511) ? (int)rootTree.x + (int)(noOfTrees *0.1 ) : 511;
+			int y1 = (rootTree.z + (int)(noOfTrees *0.1  ) < 511) ? (int)rootTree.z + (int)(noOfTrees *0.1 ) : 511;
+			forestPositions.Add (new Vector4( x0, y0, x1, y1) );
+			trees.AddRange(NaturalPlacementOfTrees(x0, y0, x1, y1, noOfTrees, rootTree));
+		}
+
+		
+
+		return trees;
+
+	}
+
+	public static  List<Vector4> GetForestPositions()
+	{
+		return forestPositions;
+	}
+
+
+	private static List<Vector3> NaturalPlacementOfTrees(int x0, int y0, int x1, int y1, int noOfTrees, Vector3 rootTree)
+	{
+		List<Vector3> trees = new List<Vector3>();
+		trees.Add (rootTree);
+		int placementCount = 0;
+		float threshold = 5f;
+		bool failed = false;
+		int failCount = 0;
+
+		int otherFailCount = 0;
+		while(placementCount < noOfTrees)
+		{
+			Vector3 treeToAdd = new Vector3(Random.Range(x0, x1), 0, Random.Range (y0, y1));
+			failed = false;
+
+			foreach(Vector3 tree in trees)
+			{
+				if(Vector3.Distance (treeToAdd, tree) > threshold * Mathf.Pow (1.1f, failCount))
+				{
+
+					otherFailCount++;
+				}
+
+				if(otherFailCount > trees.Count)
+				{
+					otherFailCount = 0;
+					failCount++;
+					failed = true;
+					break;
+				}
+			}
+
+			if(!failed)
+			{
+				trees.Add (treeToAdd);
+				placementCount++;
+				failCount = 0;
+			}
+		}
+
+		return trees;
+	}
+
+
 	private static float[,,] CalculateAlphas()
 	{
 		

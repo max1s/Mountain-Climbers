@@ -10,64 +10,18 @@ public class NaturalMesh : MonoBehaviour
 	private Material graphMat;
 
 	bool toggle = true;
+
+	public static List<Vector4> treePos;
 	
-	public static List<Point> myGraph;
+	public  List<Point> myGraph;
 	private float pointSize = 2f;
 	
 	public static float[,] steepness;
 	int terrainX;
 	int terrainZ;
-	
-	int powerOfTerrainModifier = 2;
 	int numberOfNeighbours = 4;
 	
 	TerrainData terrainData;
-	
-    public class Point
-	{
-		private Vector3 myPosition;
-		public List<Point> myNeighbours;
-        public int groupID;
-		
-		public Point(int id, Vector3 position, int noOfNeighbours)
-		{
-            groupID = id;
-			myPosition = position;
-			myNeighbours = new List<Point>();
-		}
-		
-		public Vector3 Position
-		{
-			get
-			{
-				return myPosition;
-			}
-			set
-			{
-				myPosition = value;
-			}
-		}
-
-        public static bool operator ==(Point a, Point b)
-        {
-            return a.myPosition == b.myPosition;
-        }
-
-        public static bool operator !=(Point a, Point b)
-        {
-            return a.myPosition != b.myPosition;
-        }
-
-        public void Merge(Point that)
-        {
-            if (this.groupID == that.groupID)
-                return; 
-            this.groupID = that.groupID;
-            foreach (Point p in myNeighbours)
-                p.Merge(this);
-        }
-		
-	}
 		
 	void Start()
 	{
@@ -84,10 +38,108 @@ public class NaturalMesh : MonoBehaviour
 		//GenerateEvenPoints();
 		//DrawPoints(myGraph);
 		GenerateEdges();
-		DrawGraph(myGraph, numberOfNeighbours);
+		GenerateInitialWeights(treePos);
+			//DrawGraph(myGraph, numberOfNeighbours);
 	}
 
 
+
+	public void GenerateInitialWeights(List<Vector4> forestLocs)
+	{
+		foreach(Point p in myGraph)
+		{
+			foreach(Point neighbour in p.myNeighbours)
+			{
+				float weight = 0.0f;
+				float terrainModifier = 0.0f;
+				float steepnessModifier = 0.0f;
+				float treeModifier = 0.0f;
+
+				for(int i = 1; i < 11; i++)
+				{
+				//samples
+					Vector3 samplePoint = Vector3.Lerp(p.Position, neighbour.Position, i);
+					Vector3 translatedSamplePoint = WorldToTerrainPosition(Terrain.activeTerrain, 512, samplePoint);
+				
+				//terrainModiffier
+					float height = terrainData.GetHeight((int)translatedSamplePoint.x, (int)translatedSamplePoint.y);
+
+					if(height > 0.2f && height < 0.5f)
+						terrainModifier += 0.1f;
+									
+					if(height > 0.48f && height < 0.61f)
+						terrainModifier += 0.2f;
+
+					if(height > 0.6f)
+						terrainModifier += 0.4f;
+
+
+				//averageSteepness
+					float avgSteepness = 0.0f;
+					avgSteepness += steepness[(int)translatedSamplePoint.x, (int)translatedSamplePoint.y];
+					avgSteepness += steepness[(int)translatedSamplePoint.x + 1, (int)translatedSamplePoint.y];
+					avgSteepness += steepness[(int)translatedSamplePoint.x - 1, (int)translatedSamplePoint.y];
+					avgSteepness += steepness[(int)translatedSamplePoint.x , (int)translatedSamplePoint.y + 1];
+					avgSteepness += steepness[(int)translatedSamplePoint.x , (int)translatedSamplePoint.y - 1];
+					avgSteepness /= 5;
+					steepnessModifier += avgSteepness;
+
+				//tree locs
+					for(int j = 0; j < forestLocs.Count; j++)
+					{
+						if(translatedSamplePoint.x >= forestLocs[j].x && translatedSamplePoint.z >= forestLocs[j].y
+						   && translatedSamplePoint.x <= forestLocs[j].z && translatedSamplePoint.z <= forestLocs[j].w)
+						{
+							treeModifier += 0.3f;
+						}
+					}
+
+				}
+				weight = (terrainModifier + treeModifier + steepnessModifier) * Vector3.Distance(p.Position, neighbour.Position);
+				p.myWeights.Add (weight);
+
+			}
+		}
+		//foreach(Vector4 loc in forestLocs)
+		//{
+		//	Debug.Log(loc);
+		//}
+	}
+	
+
+	List<float> DynamicWeights(Point p, Vector3 endPoint)
+	{
+		List<float> weights = new List<float>();
+		for(int i = 0; i < p.myNeighbours.Count; i++)
+		{
+			float modWeight = p.myWeights[i] + Vector3.Distance(p.myNeighbours[i].Position, endPoint);
+				weights.Add(modWeight);
+		}
+		return weights;
+	}
+
+	public void AddNode(Vector3 node)
+	{
+		Point point = new Point(myGraph.Count, node, 1);
+		Point connect = myGraph[getNearestPoint(node)];
+		point.myNeighbours.Add(connect);
+		connect.myNeighbours.Add (point);
+		connect.myWeights.Add (0);
+		myGraph.Add (point);
+
+	}
+
+	public void removeNode(Vector3 node)
+	{
+		myGraph.Remove (myGraph.Find (x => x.Position == node));
+	}
+
+	public int getNearestPoint(Vector3 point)
+	{
+		Point nearest = (Point)myGraph.OrderBy(x => Vector3.Distance(point, x.Position)).Take(1).ToList()[0];
+		int index = myGraph.FindIndex( p => p == nearest);
+		return index;
+	}
 
     void GenerateEvenPoints()
 	{
@@ -307,6 +359,67 @@ public class NaturalMesh : MonoBehaviour
 			}
 		}	
 	}
+	
+	void DrawGraphWithPath(List<Point> graph, List<Point> path)
+	{
+
+	}
+	public void DrawGraphWithPaths(List<Point> graph, List<List<Point>> paths)
+	{
+		foreach(Point origin in myGraph)
+		{
+			GameObject go = new GameObject("line");
+			LineRenderer lines = go.AddComponent<LineRenderer>();
+			bool tog = false; 
+			int lineCount = 0;
+
+			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			int i;
+			for(i = 0; i < paths.Count; i++)
+			{
+				if(paths[i].Contains (origin))
+				{
+					cube.renderer.material.color = colors[i % colors.Length];
+					tog = true;
+					break;
+				}
+			}
+			if(!tog)
+				cube.renderer.material.color = Color.gray;
+
+			//cube.renderer.material = graphMat;
+
+			cube.transform.localScale = new Vector3(pointSize, pointSize, pointSize);
+			cube.transform.position = origin.Position + new Vector3(0, 1.0f, 0);
+			cube.transform.parent = this.transform;
+			//inefficient!
+
+			lines.SetVertexCount(origin.myNeighbours.Count * 2 + 1);
+			lines.SetWidth(0.3f, 0.3f);
+			go.transform.parent = this.transform;
+
+
+
+
+
+			lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 1.0f, 0));
+			foreach(Point point in origin.myNeighbours)
+			{
+				if(tog && paths[i].Contains(point))
+				{
+					lines.renderer.material.color = colors[i % colors.Length];
+					lines.SetPosition(lineCount++, point.Position + new Vector3(0, 1.0f, 0));
+					lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 1.0f, 0));
+				}
+				else
+				{
+					lines.renderer.material.color = Color.gray;
+					lines.SetPosition(lineCount++, point.Position + new Vector3(0, 1.0f, 0));
+					lines.SetPosition(lineCount++, origin.Position + new Vector3(0, 1.0f, 0));
+				}
+			}
+		}	
+	}
 
 	void ClearGraph()
 	{
@@ -356,12 +469,10 @@ public class NaturalMesh : MonoBehaviour
 		return new Vector3(worldX, worldY, worldZ);
 	}
 
-    static Vector2 Lerp(Vector2 from, Vector2 to, float t)
-    {
-        t = Mathf.Clamp01(t);
-        return new Vector2(from.x + ((to.x - from.x) * t),
-            from.y + ((to.y - from.y) * t));
-    }
-	
-	
+	public static void populateTreePositions(List<Vector4> trees)
+	{
+		treePos = new List<Vector4>();
+		treePos = trees;
+	}
+
 }

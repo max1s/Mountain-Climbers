@@ -39,17 +39,17 @@ public class Helper
                 }
 				if((j == 1 || i == 1 || j == terrainZ - 2 || i == terrainX -2))
 				{
-					if(j == 0 && i == 0)
+					if(j == 1 && i == 1)
 						steepness[i,j] = Mathf.Max(Mathf.Abs(terrainData.GetHeight(i+1, j) - terrainData.GetHeight(i,j)), Mathf.Abs(terrainData.GetHeight(i,j+1) - terrainData.GetHeight(i,j)));
-					if(i == 0 && j > 0)
+					if(i == 1 && j > 1)
 						steepness[i,j] = Mathf.Max(Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i-1,j)), Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i+1,j+1)));
-					if(j == 0 && i > 0)
+					if(j == 1 && i > 1)
 						steepness[i,j] = Mathf.Max(Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i,j-1)), Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i+1,j+1)));
-					if(i == terrainX-1 && j == terrainZ-1)
+					if(i == terrainX-2 && j == terrainZ-2)
 						steepness[i,j] = Mathf.Max(Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i-1,j-1)), Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i-1,j)));
-					if(i == terrainX-1 && j < terrainZ-1)
+					if(i == terrainX-2 && j < terrainZ-2)
 						steepness[i,j] = Mathf.Max(Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i-1,j-1)), Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i,j+1)));
-					if(j == terrainZ-1 && i < terrainX-1)
+					if(j == terrainZ-2 && i < terrainX-2)
 						steepness[i,j] = Mathf.Max(Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i-1,j-1)), Mathf.Abs(terrainData.GetHeight(i,j) - terrainData.GetHeight(i+1,j)));
 				}
 				else

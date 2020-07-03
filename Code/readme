@@ -1,7 +1,3 @@
-////////////README FOR MAX WHITBY PROJECT////////////////
-
-All code best read with Sublime Text: http://www.sublimetext.com/
-
 To run this project: 
 1. Download the latest version of unity: https://unity3d.com/
 2. Create an Empty Game Object and attach the script Main to it. Make sure that all the code is in the folder with the main script.
